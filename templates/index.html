@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Aircraft Engine Predictive Maintenance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #12345a;
+            color: white;
+            padding: 25px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .welcome-card h2 {
+            color: #12345a;
+            margin-bottom: 12px;
+        }
+
+        .welcome-card p {
+            line-height: 1.7;
+            color: #64748b;
+        }
+
+        .upload-card {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .upload-card h2 {
+            color: #12345a;
+            margin-bottom: 15px;
+        }
+
+        .upload-card p {
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 13px 30px;
+            border-radius: 7px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result-card {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+            border-top: 5px solid #2563eb;
+        }
+
+        .result-card h2 {
+            color: #12345a;
+            margin-bottom: 20px;
+        }
+
+        .result-value {
+            font-size: 42px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .result-card p {
+            color: #64748b;
+        }
+
+        .info-card {
+            background: #e0f2fe;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            line-height: 1.6;
+            color: #075985;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 22px;
+            }
+
+            .container {
+                margin: 20px auto;
+            }
+
+            .result-value {
+                font-size: 32px;
+            }
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .high {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .moderate {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 450px;
+            height: 18px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            margin: 20px auto 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+
+        .clear-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 10px 0 15px;
+            transition: 0.3s;
+        }
+
+        .clear-btn:hover {
+            background-color: #b02a37;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background-color: #198754;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 10px 0 15px;
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #146c43;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Aircraft Engine Predictive Maintenance</h1>
+        <p>Deep Learning Based Remaining Useful Life Prediction Using LSTM</p>
+    </header>
+
+    <div class="container">
+
+        <div class="welcome-card">
+
+            <h2>Welcome to the RUL Prediction System</h2>
+
+            <p>
+                This application uses a Long Short-Term Memory (LSTM)
+                deep learning model to estimate the Remaining Useful Life
+                of aircraft engines based on sensor data.
+                Upload engine sensor readings to obtain an estimated
+                number of remaining operating cycles.
+            </p>
+
+        </div>
+
+        <div class="upload-card">
+
+            <h2>Upload Engine Sensor Data</h2>
+
+            <p>
+                Select a CSV file containing at least 30 rows
+                of engine sensor readings.
+            </p>
+
+            <form action="/predict" method="POST" enctype="multipart/form-data">
+
+                <input
+                    type="file"
+                    name="file"
+                    accept=".csv"
+                    required
+                >
+
+                <br>
+
+                <button type="submit">Predict RUL</button>
+
+            </form>
+
+        </div>
+
+        <div class="result-card">
+
+            <h2>Prediction Result</h2>
+
+            {% if prediction is defined and prediction is not none %}
+
+                <div class="result-value">
+                    {{ prediction }} Cycles
+                </div>
+
+                <p>Estimated Remaining Useful Life</p>
+
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: {{ (prediction / 125 * 100)|round(1) }}%;">
+                    </div>
+                </div>
+
+                <p>{{ ((prediction / 125) * 100)|round(1) }}% of the model's RUL cap</p>
+
+                {% if status %}
+                    <h3 class="status
+                    {% if status == 'High Remaining Life' %}
+                        high
+                    {% elif status == 'Moderate Remaining Life' %}
+                        moderate
+                    {% else %}
+                        low
+                    {% endif %}">
+                        Engine Condition: {{ status }}
+                    </h3>
+                {% endif %}
+
+            {% else %}
+
+                <div class="result-value">
+                    -- Cycles
+                </div>
+
+                <p>Awaiting prediction</p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="welcome-card">
+
+            <h2>Prediction History</h2>
+
+            <div class="history-actions">
+
+                <a href="/download_history" class="download-btn">
+                    Download History
+                </a>
+
+                <form action="/clear_history" method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete all prediction history?');">
+
+                    <button type="submit" class="clear-btn">
+                        Clear History
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% if history %}
+
+                <table style="width:100%; border-collapse:collapse; margin-top:20px;">
+
+                    <tr style="background:#e2e8f0;">
+                        <th style="padding:12px;">No.</th>
+                        <th style="padding:12px;">Predicted RUL</th>
+                        <th style="padding:12px;">Engine Condition</th>
+                        <th style="padding:12px;">Date & Time</th>
+                    </tr>
+
+                    {% for item in history %}
+
+                    <tr style="text-align:center;">
+                        <td style="padding:12px;">{{ loop.index }}</td>
+                        <td style="padding:12px;">{{ item.prediction }} cycles</td>
+                        <td style="padding:12px;">{{ item.status }}</td>
+                        <td style="padding:12px;">{{ item.datetime }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+
+            {% else %}
+
+                <p>No predictions available yet.</p>
+
+            {% endif %}
+
+        </div>
+
+        <div class="info-card">
+
+            <strong>How it works:</strong>
+
+            <br>
+
+            1. Upload engine sensor data in CSV format.
+
+            <br>
+
+            2. The system processes the sensor readings using
+            the saved preprocessing scaler.
+
+            <br>
+
+            3. The trained LSTM model analyzes the latest
+            30 sensor readings.
+
+            <br>
+
+            4. The application displays the estimated
+            Remaining Useful Life in operating cycles.
+
+        </div>
+
+    </div>
+
+    <footer>
+        Aircraft Engine Predictive Maintenance System |
+        Powered by LSTM Deep Learning and Flask
+    </footer>
+
+</body>
+
+</html>
