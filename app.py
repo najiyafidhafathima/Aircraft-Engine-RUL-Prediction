@@ -1,19 +1,12 @@
-import os
-
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-os.environ["OMP_NUM_THREADS"] = "1"
-
 import numpy as np
 import pandas as pd
-import tensorflow as tf
-
-tf.config.threading.set_intra_op_parallelism_threads(1)
-tf.config.threading.set_inter_op_parallelism_threads(1)
 import joblib
 import sqlite3
+import io
+
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, send_file
+from numpy_model import predict_rul
 
 app = Flask(__name__)
 
@@ -37,8 +30,6 @@ def init_db():
 init_db()
 
 
-model = tf.keras.models.load_model("rul_lstm_model.keras")
-
 preprocessing = joblib.load("rul_preprocessing.pkl")
 
 scaler = preprocessing["scaler"]
@@ -46,12 +37,13 @@ selected_sensors = preprocessing["selected_sensors"]
 sequence_length = preprocessing["sequence_length"]
 rul_cap = preprocessing["rul_cap"]
 
-print("LSTM Model loaded successfully!")
+print("NumPy LSTM model loaded successfully!")
 print("Preprocessing objects loaded successfully!")
 
 
 @app.route("/")
 def home():
+
     conn = sqlite3.connect("prediction_history.db")
     conn.row_factory = sqlite3.Row
 
@@ -69,6 +61,7 @@ def home():
 
 @app.route("/clear_history", methods=["POST"])
 def clear_history():
+
     conn = sqlite3.connect("prediction_history.db")
 
     conn.execute("DELETE FROM predictions")
@@ -81,6 +74,7 @@ def clear_history():
 
 @app.route("/download_history")
 def download_history():
+
     conn = sqlite3.connect("prediction_history.db")
 
     history = pd.read_sql_query(
@@ -123,6 +117,7 @@ def predict():
         return "Please upload a CSV file!"
 
     try:
+
         data = pd.read_csv(file)
 
         print("CSV file uploaded successfully!")
@@ -150,15 +145,9 @@ def predict():
 
         scaled_data = scaler.transform(sensor_data)
 
-        input_data = np.reshape(
-            scaled_data,
-            (1, sequence_length, len(selected_sensors))
-        )
+        scaled_data = scaled_data.astype(np.float32)
 
-        prediction = model.predict(
-            input_data,
-            verbose=0
-        )[0][0]
+        prediction = predict_rul(scaled_data)
 
         prediction = np.clip(prediction, 0, rul_cap)
 
@@ -166,8 +155,10 @@ def predict():
 
         if prediction > 75:
             status = "High Remaining Life"
+
         elif prediction > 30:
             status = "Moderate Remaining Life"
+
         else:
             status = "Low Remaining Life"
 
@@ -204,7 +195,9 @@ def predict():
         )
 
     except Exception as e:
+
         print("Prediction error:", str(e))
+
         return f"Error processing file: {str(e)}"
 
 
