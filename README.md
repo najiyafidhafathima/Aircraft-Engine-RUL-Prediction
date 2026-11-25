@@ -100,7 +100,9 @@ The model achieved an R² score of approximately 0.883 on the test dataset.
 ## 🌐 Flask Web Application
 ### Application Screenshot
 
-![Aircraft Engine RUL Prediction Application](screenshot.png)
+### Application Screenshot
+
+![Aircraft Engine RUL Prediction Application](<Screenshot 2026-11-25 065723.png>)
 
 The trained model is integrated into a Flask web application.
 
