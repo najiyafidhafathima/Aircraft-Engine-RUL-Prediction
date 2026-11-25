@@ -98,6 +98,9 @@ The model was developed and trained using TensorFlow/Keras. For lightweight depl
 The model achieved an R² score of approximately 0.883 on the test dataset.
 
 ## 🌐 Flask Web Application
+### Application Screenshot
+
+![Aircraft Engine RUL Prediction Application](screenshot.png)
 
 The trained model is integrated into a Flask web application.
 
